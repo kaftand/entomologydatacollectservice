@@ -5,6 +5,8 @@
 // [START app]
 const express = require('express');
 var bodyParser = require('body-parser')
+const Datastore = require('@google-cloud/datastore');
+
 var app = express()
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
