@@ -33,6 +33,11 @@ app.get('/HLC', (req, res) => {
     res.status(200).send('Hello, world!').end();
 });
 
+app.get('/test', (req, res) => {
+    console.log(req.body)
+    res.status(200).send('Hello, world!').end();
+});
+
 app.post('/HLC', function (req, res) {
     let values = []
 

@@ -1,1 +1,0 @@
-require('node-bin-setup')("8.11.3", require)
