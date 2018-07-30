@@ -1,0 +1,22 @@
+indexes:
+
+- kind: HLC
+  ancestor: no
+  properties:
+    - name: PROJECT_CODE
+    - name: PROJECT_CODE
+    - name: CLUSTER_NUMBER
+    - name: HOUSE_NUMBER
+    - name: VILLAGE
+    - name: DATE
+    - name: VOLUNTEER_NUMBER
+    - name: IN_OR_OUT
+    - name: HOUR
+    - name: GAMBIAE
+    - name: FUNESTUS
+    - name: COUSTANI
+    - name: MANSONIA
+    - name: AEDES
+    - name: COQUILETTIDIA
+    - name: OTHER
+    direction: desc

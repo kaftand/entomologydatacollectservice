@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="container">
+      <fieldset>
+        <form action="/selectKind" method="get">
+            <select class="selectpicker" data-style="btn-info" name="formType">
+                <optgroup label="Select Table">
+                    <option name="" value="null">Select Form Type</option>
+                    <% for(var i=0;i<kinds.length;i++){ %>
+                    <option name="<%= kinds[i] %>"  value="<%=kinds[i] %>"><%= kinds[i] %></option>
+                    <% } %>
+                </optgroup>
+            </select>
+            <input type='submit'name ='register'>
+      </fieldset>
+    </div>
+  </body>
+</html>
