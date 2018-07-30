@@ -79,7 +79,6 @@ app.post('/HLC', function (req, res) {
 });
 
 app.get("/selectKind", (req, res) => {
-    console.log("hit")
     const query = datastore
         .createQuery(req.query.formType)
         .select(["PROJECT_CODE"])
@@ -134,11 +133,6 @@ function getCSVCallBack(formType, res)
         var theseFields = (Fields[formType])
         const opts = {  columns:theseFields,
                         header:true};
-//        json2csv({ data: resultsData, fields: Fields[formType]},
-//            function(err, csv) {
-//                res.setHeader('Content-disposition', 'attachment; filename=data.csv');
-//                res.set('Content-Type', 'text/csv');
-//                res.status(200).send(csv)})}
         try {
             const csv = stringify(resultsData, opts);
             res.setHeader('Content-disposition', 'attachment; filename=data.csv');
