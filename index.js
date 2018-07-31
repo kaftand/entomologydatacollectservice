@@ -10,6 +10,7 @@ const stringify = require('csv-stringify/lib/sync')
 
 var app = express()
 // parse application/x-www-form-urlencoded
+app.use(express.static(__dirname + '/'));
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
@@ -23,10 +24,17 @@ app.get('/', function (req, res) {
     datastore.runQuery(query).then(results => {
         const entities = results[0];
         const kinds = entities.map(entity => entity[datastore.KEY].name);
-
+        var kinds2keep = [];
+        for (var iKind = 0; iKind < kinds.length; iKind++)
+        {
+            if (!kinds[iKind].endsWith("__"))
+            {
+                kinds2keep.push(kinds[iKind])
+            }
+        }
         console.log('Kinds:');
         kinds.forEach(kind => console.log(kind));
-        res.render('index', {kinds: kinds, error: null});
+        res.render('index', {kinds: kinds2keep, error: null});
     })
 })
 
