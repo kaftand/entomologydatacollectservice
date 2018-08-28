@@ -3,7 +3,10 @@ const implementjs = require('implement-js')
 const implement = implementjs.default
 const { Interface, type } = implementjs
 const Datastore = require('@google-cloud/datastore');
+const Fields = require('./formCols')
 const projectId = 'ihientodatacollection';
+const stringify = require('csv-stringify/lib/sync')
+
 const datastore = new Datastore({
   projectId: projectId,
 });
@@ -16,7 +19,7 @@ const GoogleCloudConn = {
     },
     postHLCData: function(resCallBack, errCallBack, req) {
         let values = []
-        const kind = 'HLC';
+        const kind = req.body.metaData.formType;
         for (let iEntry = 0; iEntry < req.body.dataArray.length; iEntry++)
         {
             let thisEntry = {
@@ -122,6 +125,37 @@ const GoogleCloudConn = {
             kinds.forEach(kind => console.log(kind));
             resCallBack(kinds2keep)
         })
+    },
+
+    downloadCSV: function (req, res) {
+        const query = datastore
+            .createQuery(req.query.formType)
+            .filter('PROJECT_CODE', '=', req.query.projectCode);
+        var callBack = this.getCSVCallBack(req.query.formType, res)
+        datastore.runQuery(query).then(callBack).catch(function(error) {
+            console.log(error)
+        });
+    },
+
+    getCSVCallBack: function (formType, res)
+    {
+        var callBack = results => {
+          // Task entities found.
+            var resultsData = results[0];
+            var theseFields = (Fields[formType])
+            const opts = {  columns:theseFields,
+                            header:true};
+            try {
+                const csv = stringify(resultsData, opts);
+                res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+                res.set('Content-Type', 'text/csv');
+                res.status(200).send(csv);
+            } catch (err) {
+              console.error(err);
+            }
+        }
+        return callBack
+
     }
 }
 module.exports = implement(dbInterface)(GoogleCloudConn)
