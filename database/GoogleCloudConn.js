@@ -38,7 +38,7 @@ const GoogleCloudConn = {
     },
     getHLCCols: function(resCallBack, errCallBack, req) {
         let values = []
-        const kind = 'HutStudy';
+        const kind = 'HLC';
         for (let iEntry = 0; iEntry < req.body.dataArray.length; iEntry++)
         {
             let thisEntry = {
@@ -59,7 +59,28 @@ const GoogleCloudConn = {
             });
     },
 
-    postHutStudyData: function()
+    postHutStudyData: function() {
+        let values = []
+        const kind = 'HutStudy';
+        for (let iEntry = 0; iEntry < req.body.dataArray.length; iEntry++)
+        {
+            let thisEntry = {
+                key:datastore.key([kind]),
+                data:req.body.dataArray[iEntry]
+            }
+            values.push(thisEntry)
+        }
+        datastore
+            .upsert(values)
+            .then(() => {
+                resCallBack()
+
+            })
+            .catch(err => {
+                errCallBack()
+                res.status(200).send('Error').end()
+            });
+    },
 
     getProjectCodes:function(resCallBack, tableName) {
         const query = datastore
