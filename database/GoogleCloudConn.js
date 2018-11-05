@@ -6,6 +6,7 @@ const Datastore = require('@google-cloud/datastore');
 const Fields = require('./formCols')
 const projectId = 'ihientodatacollection';
 const stringify = require('csv-stringify/lib/sync')
+const normalizeProjectCode = require('../utilities/normalizeProjectCode')
 
 const datastore = new Datastore({
   projectId: projectId,
@@ -14,17 +15,15 @@ const datastore = new Datastore({
 
 const GoogleCloudConn = {
 
-    getHLCData: function(resCallBack) {
-
-    },
     postHLCData: function(resCallBack, errCallBack, req) {
         let values = []
         const kind = req.body.metaData.formType;
-        for (let iEntry = 0; iEntry < req.body.dataArray.length; iEntry++)
+        var dataArray = normalizeProjectCode(req.body.dataArray)
+        for (let iEntry = 0; iEntry < dataArray; iEntry++)
         {
             let thisEntry = {
                 key:datastore.key([kind]),
-                data:req.body.dataArray[iEntry]
+                data:dataArray[iEntry]
             }
             values.push(thisEntry)
         }
@@ -65,11 +64,12 @@ const GoogleCloudConn = {
     postHutStudyData: function() {
         let values = []
         const kind = 'HutStudy';
-        for (let iEntry = 0; iEntry < req.body.dataArray.length; iEntry++)
+        var dataArray = normalizeProjectCode(req.body.dataArray)
+        for (let iEntry = 0; iEntry < dataArray; iEntry++)
         {
             let thisEntry = {
                 key:datastore.key([kind]),
-                data:req.body.dataArray[iEntry]
+                data:dataArray[iEntry]
             }
             values.push(thisEntry)
         }

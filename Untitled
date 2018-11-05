@@ -1,1 +1,0 @@
-curl -H "Content-Type: application/json" -d '[{"VILLAGE":"Kingani", "PROJECT_CODE":"BITTEST", "DATE":"2010-12-31 23:59:59", "DATA_ENTRY_NAME":"david", "HOUSE_NUMBER":1, "CLUSTER_NUMBER":2, "VOLUNTEER_NUMBER":1, "IN_OR_OUT":"IN", "GAMBIAE":2, "FUNESTUS":1, "COUSTANI":0, "CULEX":0, "MANSONIA":0, "AEDES":1, "COQUILETTIDIA":3, "OTHER":1, "HOUR":"10-11:00"}]' http://localhost:8080/HLC

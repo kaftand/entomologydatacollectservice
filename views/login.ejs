@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <form action="/authenticate" method="post">
+        <div>
+            <div>
+                Username
+                <input type="text" name="username">
+            </div>
+            <div>
+                Password
+                <input type="text" name="password">
+            </div>
+            <input type='submit' name ='login'>
+            <% if (failed) { %>
+                <div>Wrong credentials, try again </div>
+            <% } %>
+        </div>
+    </form>
+</html
