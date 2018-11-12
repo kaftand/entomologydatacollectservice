@@ -7,6 +7,8 @@ const Fields = require('./formCols')
 const projectId = 'ihientodatacollection';
 const stringify = require('csv-stringify/lib/sync')
 const normalizeProjectCode = require('../utilities/normalizeProjectCode')
+const insertTimeStamp = require('../utilities/insertTimeStamp')
+
 
 const datastore = new Datastore({
   projectId: projectId,
@@ -19,8 +21,10 @@ const GoogleCloudConn = {
         let values = []
         const kind = req.body.metaData.formType;
         var dataArray = normalizeProjectCode(req.body.dataArray)
+        var dataArray = insertTimeStamp(dataArray)
         for (let iEntry = 0; iEntry < dataArray; iEntry++)
         {
+            dataArray[iEntry].UPLOAD_TIMESTAMP = Date.now()
             let thisEntry = {
                 key:datastore.key([kind]),
                 data:dataArray[iEntry]
@@ -35,6 +39,7 @@ const GoogleCloudConn = {
             })
             .catch(err => {
                 errCallBack()
+                console.log("ERROR")
                 res.status(200).send('Error').end()
             });
     },
