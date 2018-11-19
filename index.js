@@ -26,6 +26,8 @@ app.set('view engine', 'ejs')
 
 app.use("/HLC", hLCPost)
 app.use("/HutTrial", hutStudyPost)
+app.use("/IndoorRestingCollection", hLCPost)
+app.use("/CDC_HDT", hLCPost)
 app.use("/login", login)
 app.use("/authenticate", authenticate)
 app.use(authenticateMiddleware)

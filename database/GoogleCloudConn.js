@@ -22,9 +22,8 @@ const GoogleCloudConn = {
         const kind = req.body.metaData.formType;
         var dataArray = normalizeProjectCode(req.body.dataArray)
         var dataArray = insertTimeStamp(dataArray)
-        for (let iEntry = 0; iEntry < dataArray; iEntry++)
+        for (let iEntry = 0; iEntry < dataArray.length; iEntry++)
         {
-            dataArray[iEntry].UPLOAD_TIMESTAMP = Date.now()
             let thisEntry = {
                 key:datastore.key([kind]),
                 data:dataArray[iEntry]
