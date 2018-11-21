@@ -12,6 +12,7 @@ module.exports = function (req, res, next) {
         jwt.verify(token, config.secret,
             function(err, decoded) {
                 if (err) {
+                    res.redirect("/login")
                     return res.json({success:false,
                                     message:"incorrect token"})
                 } else {
