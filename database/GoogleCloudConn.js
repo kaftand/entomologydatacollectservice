@@ -160,6 +160,23 @@ const GoogleCloudConn = {
         }
         return callBack
 
+    },
+
+    getRawData: function(formType, serial, res) {
+        const query = datastore
+            .createQuery(formType)
+            .filter('serial', '=', parseInt(serial));
+        var callBack = results => {
+            try {
+                res.set('Content-Type', 'application/json');
+                res.status(200).send(results[0]);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        datastore.runQuery(query).then(callBack).catch(function(error) {
+            console.log(error)
+        });
     }
 }
 module.exports = implement(dbInterface)(GoogleCloudConn)
