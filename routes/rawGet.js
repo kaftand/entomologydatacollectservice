@@ -17,4 +17,8 @@ apiRouter.get('/HLC', function (req, res) {
     db.getRawData("HLC", req.query.serial, res)
 });
 
+apiRouter.get('/ConeBioassay', function (req, res) {
+    db.getRawData("ConeBioassay", req.query.serial, res)
+});
+
 module.exports = apiRouter
