@@ -145,13 +145,13 @@ const GoogleCloudConn = {
     {
         var callBack = results => {
           // Task entities found.
-            var resultsData = results[0];
+            const thisformType = formType
+            var resultsData = this.formatterFunctions[formType](results[0])
             var theseFields = (Fields[formType])
-            const opts = {  columns:theseFields,
-                            header:true};
+            const opts = {header:true};
             try {
                 const csv = stringify(resultsData, opts);
-                res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+                res.setHeader('Content-disposition', 'attachment; filename=' + formType + '.csv');
                 res.set('Content-Type', 'text/csv');
                 res.status(200).send(csv);
             } catch (err) {
@@ -177,6 +177,85 @@ const GoogleCloudConn = {
         datastore.runQuery(query).then(callBack).catch(function(error) {
             console.log(error)
         });
+    },
+
+
+    formatterFunctions: {
+
+        sortSerialFormRow: function (arr) {
+            const sortingFun = function (objA, objB) {
+                if (objA.serial > objB.serial) {
+                    return 1
+                } else if (objA.serial < objB.serial) {
+                    return -1
+                } else if (objA.formEntryRow > objB.formEntryRow) {
+                    return 1
+                } else {
+                    return -1
+                }
+            }
+            return arr.sort(sortingFun)
+        },
+
+        "ConeBioassay": function (arr) {
+            var sortedArray = this.sortSerialFormRow(arr)
+            var renamedArray = []
+            console.log("hit")
+            for (var iRow = 0; iRow < sortedArray.length; iRow++) {
+                renamedArray.push({
+                    "Study serial":sortedArray[iRow].serial,
+                    "Name of person performing bioassays":sortedArray[iRow].EXPOSURE_PERFORMED_BY,
+                    "date of test dd/mm/yyyy":sortedArray[iRow].DATE,
+                    "Cluster Number":sortedArray[iRow].CLUSTER_NUMBER,
+                    "House number":sortedArray[iRow].HOUSE_NUMBER,
+                    "IRS Code":sortedArray[iRow].IRS_CODE,
+                    "Temperature":sortedArray[iRow].TEMPERATURE,
+                    "Humidity":sortedArray[iRow].HUMIDITY,
+                    "mosquito sp.":sortedArray[iRow].MOSQUITO_STRAIN,
+                    "age of mosq.":sortedArray[iRow].MOSQUITO_AGE_MIN.toString() + "-" + sortedArray[iRow].MOSQUITO_AGE_MAX.toString(),
+                    "cone":sortedArray[iRow].REPLICATE,
+                    "test start":sortedArray[iRow].EXPOSURE_START,
+                    "test end":sortedArray[iRow].EXPOSURE_END,
+                    "mosq. exposed":sortedArray[iRow].N_EXPOSED,
+                    "KD60A":sortedArray[iRow].A1,
+                    "KD60D":sortedArray[iRow].M1,
+                    "a24":sortedArray[iRow].A24,
+                    "d24":sortedArray[iRow].M24,
+                    "a48":sortedArray[iRow].A48,
+                    "d48":sortedArray[iRow].M48,
+                    "a72":sortedArray[iRow].A72,
+                    "d72":sortedArray[iRow].M72,
+                    "a96":sortedArray[iRow].A96,
+                    "d96":sortedArray[iRow].M96,
+                    "a120":sortedArray[iRow].A120,
+                    "d120":sortedArray[iRow].M120,
+                    "KD60J":sortedArray[iRow].KD60_TEMP,
+                    "KD60H":sortedArray[iRow].KD60_HUMIDITY,
+                    "24J":sortedArray[iRow].M24_TEMP,
+                    "24H":sortedArray[iRow].M24_HUMIDITY,
+                    "48J":sortedArray[iRow].M48_TEMP,
+                    "48H":sortedArray[iRow].M48_HUMIDITY,
+                    "72J":sortedArray[iRow].M72_TEMP,
+                    "72H":sortedArray[iRow].M72_HUMIDITY,
+                    "96J":sortedArray[iRow].M96_TEMP,
+                    "96H":sortedArray[iRow].M96_HUMIDITY,
+                    "120J":sortedArray[iRow].M120_TEMP,
+                    "120H":sortedArray[iRow].M120_HUMIDITY
+                })
+            }
+            return renamedArray
+        },
+        "IndoorRestingCollection": function (arr) {
+            console.log("IndoorRestingCollection")
+            return arr
+        },
+        "HLC": function (arr) {
+            console.log("HLC")
+            return arr
+        },
+        "CDC_HDT": function (arr) {
+            return arr
+        }
     }
 }
 module.exports = implement(dbInterface)(GoogleCloudConn)
