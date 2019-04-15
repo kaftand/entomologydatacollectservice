@@ -181,10 +181,37 @@ const GoogleCloudConn = {
 
 
     formatterFunctions: {
-
+        wierdDateGreaterThan: function(ds1, ds2) {
+            const yearParse = function(datestring) {
+                return parseInt(datestring.substr(6,4))
+            }
+            const monthParse = function(datestring) {
+                return parseInt(datestring.substr(3,2))
+            }
+            const dayParse = function(datestring) {
+                return parseInt(datestring.substr(0,2))
+            }
+            if (yearParse(ds1) > yearParse(ds2)) {
+                return true
+            } else if (yearParse(ds1) < yearParse(ds2)) {
+                return false
+            } else if (monthParse(ds1) >  monthParse(ds2)) {
+                return true
+            } else if (monthParse(ds1) <  monthParse(ds2)) {
+                return false
+            } else if (dayParse(ds1) > dayParse(ds2)) {
+                return true
+            } else {
+                return false
+            }
+        },
         sortSerialFormRow: function (arr) {
             const sortingFun = function (objA, objB) {
-                if (objA.serial > objB.serial) {
+                if (this.wierdDateGreaterThan(objA.DATE, objB.DATE)) {
+                    return 1
+                } else if (this.wierdDateGreaterThan(objB.DATE, objA.DATE)) {
+                    return -1
+                } else if (objA.serial > objB.serial) {
                     return 1
                 } else if (objA.serial < objB.serial) {
                     return -1
@@ -193,11 +220,25 @@ const GoogleCloudConn = {
                 } else {
                     return -1
                 }
-            }
+            }.bind(this)
             return arr.sort(sortingFun)
         },
 
+        filterMadeAfter2018: function (arr) {
+            const parseYear = function (datestring) {
+                return parseInt(datestring.substr(0,4))
+            }
+            var filteredArray = []
+            for (var i = 0; i < arr.length; i++) {
+                if (parseYear(arr[i].UPLOAD_TIMESTAMP) > 2018) {
+                    filteredArray.push(arr[i])
+                }
+            }
+            return filteredArray
+        },
+
         "ConeBioassay": function (arr) {
+            arr = this.filterMadeAfter2018(arr)
             var sortedArray = this.sortSerialFormRow(arr)
             var renamedArray = []
             console.log("hit")
@@ -212,7 +253,7 @@ const GoogleCloudConn = {
                     "Temperature":sortedArray[iRow].TEMPERATURE,
                     "Humidity":sortedArray[iRow].HUMIDITY,
                     "mosquito sp.":sortedArray[iRow].MOSQUITO_STRAIN,
-                    "age of mosq.":sortedArray[iRow].MOSQUITO_AGE_MIN.toString() + "-" + sortedArray[iRow].MOSQUITO_AGE_MAX.toString(),
+                    "age of mosq.":sortedArray[iRow].MOSQUITO_AGE_MIN.toString() + " to " + sortedArray[iRow].MOSQUITO_AGE_MAX.toString() + " days",
                     "cone":sortedArray[iRow].REPLICATE,
                     "test start":sortedArray[iRow].EXPOSURE_START,
                     "test end":sortedArray[iRow].EXPOSURE_END,
@@ -254,7 +295,31 @@ const GoogleCloudConn = {
             return arr
         },
         "CDC_HDT": function (arr) {
-            return arr
+            arr = this.filterMadeAfter2018(arr)
+            arr = this.sortSerialFormRow(arr)
+            var renamedArray = []
+            const speciesStrings = ["CULEX","FUNESTUS","ARABIENSIS"]
+            for (var iRow = 0; iRow < arr.length; iRow++) {
+                for (var iSpecies = 0; iSpecies < speciesStrings.length; iSpecies++) {
+                    renamedArray.push({
+                        "Cluster":arr[iRow].CLUSTER_NUMBER,
+                        "Project Code":arr[iRow].PROJECT_CODE,
+                        "Serial":arr[iRow].serial,
+                        "Miezi":arr[iRow].MONTH,
+                        "Weeki":arr[iRow].WEEK,
+                        "Tarehe":arr[iRow].DATE,
+                        "Form Row":arr[iRow].formEntryRow,
+                        "House Number":arr[iRow].HUT_NUMBER,
+                        "Trap_ID":arr[iRow].TRAP_ID,
+                        "species":speciesStrings[iSpecies],
+                        "hajalawazima":arr[iRow][speciesStrings[iSpecies] + "_UNFED_ALIVE"],
+                        "amekulawazima":arr[iRow][speciesStrings[iSpecies] + "_FED_ALIVE"],
+                        "hajalaamekufa":arr[iRow][speciesStrings[iSpecies] + "_UNFED_DEAD"],
+                        "amekulaamekufa":arr[iRow][speciesStrings[iSpecies] + "_FED_DEAD"]
+                    })
+                }
+            }
+            return renamedArray
         }
     }
 }
