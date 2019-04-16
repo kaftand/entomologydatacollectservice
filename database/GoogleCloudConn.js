@@ -287,12 +287,72 @@ const GoogleCloudConn = {
             return renamedArray
         },
         "IndoorRestingCollection": function (arr) {
-            console.log("IndoorRestingCollection")
-            return arr
+            arr = this.filterMadeAfter2018(arr)
+            arr = this.sortSerialFormRow(arr)
+            const speciesStrings = ["CULEX","FUNESTUS","ARABIENSIS"]
+            const fedUnfed = function(swahili) {
+                if (swahili.includes("amekula")) {
+                    return "fed"
+                } else if (swahili.includes("hajala")) {
+                    return "unfed"
+                } else {
+                    return ""
+                }
+            }
+
+            var renamedArray = []
+            for (var iRow = 0; iRow < arr.length; iRow++) {
+                for (var iSpecies = 0; iSpecies < speciesStrings.length; iSpecies++) {
+                    renamedArray.push({
+                        "Cluster":arr[iRow].CLUSTER_NUMBER,
+                        "Project Code":arr[iRow].PROJECT_CODE,
+                        "Serial":arr[iRow].serial,
+                        "Miezi":arr[iRow].MONTH,
+                        "Weeki":arr[iRow].WEEK,
+                        "Tarehe":arr[iRow].DATE,
+                        "Form Row":arr[iRow].formEntryRow,
+                        "House Number":arr[iRow].HUT_NUMBER,
+                        "Feeding":fedUnfed(arr[iRow].TRAP_ID),
+                        "species":speciesStrings[iSpecies],
+                        "Wazima":arr[iRow][speciesStrings[iSpecies] + "_ALIVE"],
+                        "Amekufa":arr[iRow][speciesStrings[iSpecies] + "_DEAD"],
+                        "dead24":arr[iRow][speciesStrings[iSpecies] + "_M24"],
+                        "dead48":arr[iRow][speciesStrings[iSpecies] + "_M48"],
+                        "dead72":arr[iRow][speciesStrings[iSpecies] + "_M72"],
+                        "dead96":arr[iRow][speciesStrings[iSpecies] + "_M96"],
+                        "dead120":arr[iRow][speciesStrings[iSpecies] + "_M120"]
+                    })
+                }
+            }
+
+            return renamedArray
         },
         "HLC": function (arr) {
-            console.log("HLC")
-            return arr
+            arr = this.filterMadeAfter2018(arr)
+            arr = this.sortSerialFormRow(arr)
+            var renamedArray = []
+            for (var iRow = 0; iRow < arr.length; iRow++) {
+                renamedArray.push({
+                    "Project Code":arr[iRow].PROJECT_CODE,
+                    "VILLAGE":arr[iRow].VILLAGE,
+                    "serial":arr[iRow].serial,
+                    "form row":arr[iRow].formEntryRow,
+                    "TIME":arr[iRow].HOUR,
+                    "DATE":arr[iRow].DATE,
+                    "HOUSE NO":arr[iRow].HOUSE_NUMBER,
+                    "LOCATION (IN/OUT)":arr[iRow].IN_OR_OUT,
+                    "COLLECTOR":arr[iRow].VOLUNTEER,
+                    "An gambiae":arr[iRow].GAMBIAE,
+                    "An funestus":arr[iRow].FUNESTUS,
+                    "An coustani":arr[iRow].COUSTANI,
+                    "culex":arr[iRow].CULEX,
+                    "mansonia":arr[iRow].MANSONIA,
+                    "aedes":arr[iRow].AEDES,
+                    "coquiletidia":arr[iRow].COQUILETTIDIA,
+                    "other":arr[iRow].other
+                })
+            }
+            return renamedArray
         },
         "CDC_HDT": function (arr) {
             arr = this.filterMadeAfter2018(arr)
