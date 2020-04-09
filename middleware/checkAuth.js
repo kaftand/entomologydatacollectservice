@@ -16,7 +16,7 @@ module.exports = function (req, res, next) {
                     return res.json({success:false,
                                     message:"incorrect token"})
                 } else {
-                    req.decoded = decoded
+                    //req.decoded = decoded
                     next()
                 }
             }
