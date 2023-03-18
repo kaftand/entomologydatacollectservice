@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/datastore": "^1.4.1",
+    "@google-cloud/datastore": "^7.4.0",
     "cookie-parser": "^1.4.3",
     "csv": "^3.1.0",
     "ejs": "^2.6.1",
